@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kayenta
+  namespace: kayenta
+  labels:
+    app.kubernetes.io/name: kayenta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kayenta
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kayenta
+    spec:
+      containers:
+        - name: kayenta
+          # Find the list of tags here: https://console.cloud.google.com/gcr/images/spinnaker-marketplace/GLOBAL/kayenta?gcrImageListsize=30
+          # This is just the tag I've been using for a while. I use one of the images NOT tagged
+          # with Spinnaker because the Spinnaker releases are far slower.
+          image: "gcr.io/spinnaker-marketplace/kayenta:0.17.0-20200803200017"
+          env:
+            # If you need to troubleshoot, you can set the logging level by adding
+            # -Dlogging.level.root=TRACE
+            # Without the log at DEBUG level, very little logging comes out at all and
+            # it's really hard to see if something goes wrong. If you don't want that
+            # much logging, go ahead and remove the log level option here.
+            - name: JAVA_OPTS
+              value: "-XX:+UnlockExperimentalVMOptions -Dlogging.level.root=DEBUG"
+            # We can store secrets outside config and provide them via the environment.
+            # Insert them into the config file using ${dot.delimited} versions of the
+            # variables, like ${azure.storageKey} which we saw in the ConfigMap.
+            # - name: AZURE_STORAGEKEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: azure-storage
+            #       key: storage-key
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/kayenta/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: kayenta

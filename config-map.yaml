@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kayenta
+  namespace: kayenta
+data:
+  kayenta.yml: |-
+    server:
+      port: 8090
+
+    # This should match the name of the master service from when you deployed the Redis Helm chart earlier
+    redis:
+      connection: redis://redis-master:6379
+
+    kayenta:
+      atlas:
+        enabled: false
+
+      google:
+        enabled: false
+
+      azure:
+        enabled: false
+
+      aws:
+        enabled: false
+
+      datadog:
+        enabled: false
+
+      graphite:
+        enabled: false
+
+      newrelic:
+        enabled: false
+
+      # Configure your Prometheus here. Or if you're using something else, disable
+      # Prometheus and configure your own metrics store. The important part is you
+      # MUST have a metrics store configured!
+      prometheus:
+        enabled: true
+        accounts:
+        - name: canary-prometheus
+          endpoint:
+            baseUrl: http://prometheus:9090
+          supportedTypes:
+            - METRICS_STORE
+
+      signalfx:
+        enabled: true
+
+      wavefront:
+        enabled: false
+
+      gcs:
+        enabled: false
+
+      blobs:
+        enabled: false
+
+      s3:
+        enabled: false
+
+      stackdriver:
+        enabled: false
+
+      memory:
+        enabled: true
+        accounts:
+          - name: in-memory-store-account
+            supportedTypes:
+              - OBJECT_STORE
+              - CONFIGURATION_STORE
+
+      configbin:
+        enabled: false
+
+      remoteJudge:
+        enabled: false
+
+      # Enable the SCAPE endpoint that has the same user experience that the Canary StageExecution in Deck/Orca has.
+      # By default this is disabled - in standalone we enable it!
+      standaloneCanaryAnalysis:
+        enabled: true
+
+      # Retry configuration for metrics fetching from metrics storage (see: MetricsRetryConfigurationProperties)
+      metrics:
+        retry:
+          series: SERVER_ERROR
+          statuses: REQUEST_TIMEOUT, TOO_MANY_REQUESTS
+          attempts: 10
+          backoffPeriodMultiplierMs: 1000
+
+      # Set the serialization options for springboot.jackson
+      serialization:
+        writeDatesAsTimestamps: false
+        writeDurationsAsTimestamps: false
+
+    management.endpoints.web.exposure.include: '*'
+    management.endpoint.health.show-details: always
+    # To fix issue with kayenta-integration-tests while upgrading spring-boot to 2.3.12
+    # https://github.com/micrometer-metrics/micrometer-docs/issues/123
+    management.metrics.export.graphite.graphite-tags-enabled: false
+
+    keiko:
+      queue:
+        redis:
+          queueName: kayenta.keiko.queue
+          deadLetterQueueName: kayenta.keiko.queue.deadLetters
+
+    spectator:
+      applicationName: ${spring.application.name}
+      webEndpoint:
+        enabled: true
+
+    swagger:
+      enabled: true
+      title: Kayenta API
+      description:
+      contact:
+      patterns:
+        - /admin.*
+        - /canary.*
+        - /canaryConfig.*
+        - /canaryJudgeResult.*
+        - /credentials.*
+        - /fetch.*
+        - /health
+        - /judges.*
+        - /metadata.*
+        - /metricSetList.*
+        - /metricSetPairList.*
+        - /metricServices.*
+        - /pipeline.*
+        - /standalone.*

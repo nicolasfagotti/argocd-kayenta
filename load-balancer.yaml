@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kayenta
+  name: kayenta-load-balancer
   namespace: kayenta
   labels:
     app.kubernetes.io/name: kayenta
 spec:
   ports:
-    - port: 80
+    - port: 8090
       targetPort: http
       protocol: TCP
       name: http

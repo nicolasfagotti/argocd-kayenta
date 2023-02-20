@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kayenta
-  namespace: kayenta-deployment
+  name: kayenta-deployment
+  namespace: kayenta
   labels:
     app.kubernetes.io/name: kayenta
 spec:

@@ -39,7 +39,7 @@ data:
         accounts:
         - name: canary-prometheus
           endpoint:
-            baseUrl: http://prometheus-operated:9090
+            baseUrl: http://prometheus-operated.prometheus.svc.cluster.local:9090
           supportedTypes:
             - METRICS_STORE
 

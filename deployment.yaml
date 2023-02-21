@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kayenta-deployment
+  name: kayenta
   namespace: kayenta
   labels:
     app.kubernetes.io/name: kayenta
@@ -55,4 +55,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: kayenta-config-map
+            name: kayenta-config

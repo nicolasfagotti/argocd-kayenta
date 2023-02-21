@@ -20,7 +20,8 @@ spec:
           # Find the list of tags here: https://console.cloud.google.com/gcr/images/spinnaker-marketplace/GLOBAL/kayenta?gcrImageListsize=30
           # This is just the tag I've been using for a while. I use one of the images NOT tagged
           # with Spinnaker because the Spinnaker releases are far slower.
-          image: "gcr.io/spinnaker-marketplace/kayenta:0.17.0-20200803200017"
+          # image: "gcr.io/spinnaker-marketplace/kayenta:0.17.0-20200803200017"
+          image: "armory/kayenta:2.28.4"
           env:
             # If you need to troubleshoot, you can set the logging level by adding
             # -Dlogging.level.root=TRACE

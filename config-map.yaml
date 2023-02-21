@@ -44,7 +44,7 @@ data:
             - METRICS_STORE
 
       signalfx:
-        enabled: true
+        enabled: false
 
       wavefront:
         enabled: false
